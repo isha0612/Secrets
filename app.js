@@ -4,11 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
-const session = require("express-session");
-const passport = require("passport");
-const passportLocalMongoose = require("passport-local-mongoose");
-// const bcrypt = require('bcrypt');
-// const saltRounds = 10;
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const app = express();
 
@@ -40,29 +37,29 @@ app.get("/register", function(req, res) {
 
 app.post("/register", function(req, res) {
 
-    // bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-    //     const newUser = new User ({
-    //         email: req.body.username,
-    //         password: hash
-    //     });
-    //     newUser.save(function(err) {
-    //         if(!err) {
-    //             console.log("Successfully saved!");
-    //             res.render("secrets");
-    //         }
-    //     });
-    // });
+     bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+        const newUser = new User ({
+            email: req.body.username,
+            password: hash
+        });
+        newUser.save(function(err) {
+            if(!err) {
+                console.log("Successfully saved!");
+                res.render("secrets");
+            }
+        });
+    });
 });
 
 app.post("/login", function(req, res) {
-    // User.findOne({email: req.body.username}, function(err, foundItem) {
-    //     if(!err) {
-    //         bcrypt.compare(req.body.password, foundItem.password, function(err, result) {
-    //             if(result == true)
-    //             res.render("secrets");
-    //         })
-    //     }
-    // })
+    User.findOne({email: req.body.username}, function(err, foundItem) {
+        if(!err) {
+            bcrypt.compare(req.body.password, foundItem.password, function(err, result) {
+              if(result == true)
+              res.render("secrets");
+            })
+         }
+    })
 })
 
 
